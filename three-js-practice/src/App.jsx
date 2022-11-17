@@ -22,67 +22,27 @@ function App() {
       1,
       10000
     )
-    camera.position.set(0, 0, 1000)
+    camera.position.set(0, 0, 100)
 
     // geometry
-    const geometry = new THREE.BufferGeometry()
-    const MAX_POINTS = 1000
-    let drawCount = 2
+    const geometry = new THREE.BoxGeometry(5, 5, 5)
+    const material = new THREE.MeshStandardMaterial({ color: 'skyblue' })
+    const cone = new THREE.Mesh(geometry, material)
 
-    // attributes
-    const positions = new Float32Array(MAX_POINTS * 3) // 3 vertices per point
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    const light = new THREE.AmbientLight(0x404040) // soft white light
+    scene.add(light)
 
-    // drawcalls
-    drawCount = 0 // draw the first 2 points, only
-    geometry.setDrawRange(0, drawCount)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
+    scene.add(directionalLight)
 
-    // material
-    const material = new THREE.LineBasicMaterial({ color: 'skyblue' })
-
-    // line
-    const line = new THREE.Line(geometry, material)
-    scene.add(line)
-
-    // update positions
-    updatePositions()
-
-    // update positions
-    function updatePositions() {
-      const positions = line.geometry.attributes.position.array
-
-      let x, y, z, index
-      x = y = z = index = 0
-
-      for (let i = 0, l = MAX_POINTS; i < l; i++) {
-        positions[index++] = x
-        positions[index++] = y
-        positions[index++] = z
-
-        x += (Math.random() - 0.5) * 30
-        y += (Math.random() - 0.5) * 30
-        z += (Math.random() - 0.5) * 30
-      }
-    }
+    scene.add(cone)
 
     // animate
     function animate() {
       requestAnimationFrame(animate)
-
-      drawCount = (drawCount + 1) % MAX_POINTS
-
-      line.geometry.setDrawRange(0, drawCount)
+      cone.rotation.x += 0.01
+      cone.rotation.y += 0.01
       renderer.render(scene, camera)
-
-      if (drawCount === 0) {
-        // periodically, generate new data
-
-        updatePositions()
-
-        line.geometry.attributes.position.needsUpdate = true // required after the first render
-
-        line.material.color.setHSL(Math.random(), 1, 0.5)
-      }
     }
 
     const onWindowResize = () => {
