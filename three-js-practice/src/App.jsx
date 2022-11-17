@@ -1,69 +1,103 @@
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
 import reactLogo from './assets/react.svg'
 import * as THREE from 'three'
 
 import './App.css'
 
 function App() {
-  const scene = new THREE.Scene()
-  const geometry = new THREE.BufferGeometry()
+  const mountRef = useRef(null)
 
-  const camera = new THREE.PerspectiveCamera(
-    45,
-    window.innerWidth / window.innerHeight,
-    1,
-    500
-  )
-  camera.position.set(0, 0, 100)
-  camera.lookAt(0, 0, 0)
+  useEffect(() => {
+    const renderer = new THREE.WebGLRenderer()
+    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    mountRef.current.appendChild(renderer.domElement)
+    // scene
+    const scene = new THREE.Scene()
 
-  const material = new THREE.LineDashedMaterial({
-    color: 'skyblue',
-    linewidth: 20,
-    scale: 10,
-    dashSize: 3,
-    gapSize: 1,
-  })
-  const MAX_POINTS = 500
-  const positions = new Float32Array(MAX_POINTS * 3)
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    // camera
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight,
+      1,
+      10000
+    )
+    camera.position.set(0, 0, 1000)
 
-  const drawCount = 2
-  geometry.setDrawRange(0, drawCount)
+    // geometry
+    const geometry = new THREE.BufferGeometry()
+    const MAX_POINTS = 1000
+    let drawCount = 2
 
-  const line = new THREE.Line(geometry, material)
+    // attributes
+    const positions = new Float32Array(MAX_POINTS * 3) // 3 vertices per point
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
 
-  const renderer = new THREE.WebGLRenderer()
-  renderer.setSize(window.innerWidth, window.innerHeight)
-  document.body.appendChild(renderer.domElement)
+    // drawcalls
+    drawCount = 0 // draw the first 2 points, only
+    geometry.setDrawRange(0, drawCount)
 
-  scene.add(line)
+    // material
+    const material = new THREE.LineBasicMaterial({ color: 'skyblue' })
 
-  function animate() {
-    requestAnimationFrame(animate)
+    // line
+    const line = new THREE.Line(geometry, material)
+    scene.add(line)
 
-    const p = line.geometry.attributes.position.array
+    // update positions
+    updatePositions()
 
-    let x, y, z, index
-    x = y = z = index = 0
+    // update positions
+    function updatePositions() {
+      const positions = line.geometry.attributes.position.array
 
-    for (let i = 0, l = MAX_POINTS; i < l; i++) {
-      positions[index++] = x
-      positions[index++] = y
-      positions[index++] = z
+      let x, y, z, index
+      x = y = z = index = 0
 
-      x += (Math.random() - 0.5) * 30
-      y += (Math.random() - 0.5) * 30
-      z += (Math.random() - 0.5) * 30
+      for (let i = 0, l = MAX_POINTS; i < l; i++) {
+        positions[index++] = x
+        positions[index++] = y
+        positions[index++] = z
+
+        x += (Math.random() - 0.5) * 30
+        y += (Math.random() - 0.5) * 30
+        z += (Math.random() - 0.5) * 30
+      }
     }
-    line.geometry.setDrawRange(0, 50)
-    line.geometry.attributes.position.needsUpdate = true
 
-    renderer.render(scene, camera)
-  }
-  animate()
+    // animate
+    function animate() {
+      requestAnimationFrame(animate)
 
-  return <></>
+      drawCount = (drawCount + 1) % MAX_POINTS
+
+      line.geometry.setDrawRange(0, drawCount)
+      renderer.render(scene, camera)
+
+      if (drawCount === 0) {
+        // periodically, generate new data
+
+        updatePositions()
+
+        line.geometry.attributes.position.needsUpdate = true // required after the first render
+
+        line.material.color.setHSL(Math.random(), 1, 0.5)
+      }
+    }
+
+    const onWindowResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(window.innerWidth, window.innerHeight)
+    }
+
+    window.addEventListener('resize', onWindowResize, false)
+    animate()
+
+    return () => mountRef.current.removeChild(renderer.domElement)
+  }, [])
+
+  return <div ref={mountRef}></div>
 }
 
 export default App
