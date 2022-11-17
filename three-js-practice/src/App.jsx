@@ -25,23 +25,58 @@ function App() {
     camera.position.set(0, 0, 100)
 
     // geometry
-    const geometry = new THREE.BoxGeometry(5, 5, 5)
-    const material = new THREE.MeshStandardMaterial({ color: 'skyblue' })
-    const cone = new THREE.Mesh(geometry, material)
+    const makeBox = () => {
+      const geometry = new THREE.BoxGeometry(2, 3, 3)
+      const material = new THREE.MeshStandardMaterial({
+        color: 'blue',
+        metalness: 0.5,
+      })
+      const cone = new THREE.Mesh(geometry, material)
+      return cone
+    }
+    const cone = makeBox()
+    const box = makeBox()
+    const c = makeBox()
+    const b = makeBox()
+    const d = makeBox()
+    box.position.x = 10
+    c.position.x = -10
+    b.position.y = 10
+    d.position.y = -10
 
     const light = new THREE.AmbientLight(0x404040) // soft white light
     scene.add(light)
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8)
     scene.add(directionalLight)
 
     scene.add(cone)
+    scene.add(box)
+    scene.add(c)
+    scene.add(b)
+    scene.add(d)
+
+    function rotate(name) {
+      name.rotation.x += 0.01
+      name.rotation.y += 0.01
+      name.rotation.z -= 0.02
+    }
 
     // animate
     function animate() {
       requestAnimationFrame(animate)
-      cone.rotation.x += 0.01
-      cone.rotation.y += 0.01
+
+      rotate(cone)
+      rotate(box)
+      rotate(c)
+      rotate(b)
+      rotate(d)
+      b.position.y += 0.01
+      d.position.y -= 0.01
+      box.position.x += 0.01
+      c.position.x -= 0.01
+      cone.position.z += 0.02
+
       renderer.render(scene, camera)
     }
 
