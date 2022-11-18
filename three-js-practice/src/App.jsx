@@ -26,7 +26,7 @@ function App() {
 
     // geometry
     const makeBox = () => {
-      const geometry = new THREE.BoxGeometry(2, 3, 3)
+      const geometry = new THREE.BoxGeometry(3, 3, 3)
       const material = new THREE.MeshStandardMaterial({
         color: 'blue',
         metalness: 0.5,
@@ -47,7 +47,7 @@ function App() {
     const light = new THREE.AmbientLight(0x404040) // soft white light
     scene.add(light)
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8)
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 3)
     scene.add(directionalLight)
 
     scene.add(cone)
