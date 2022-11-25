@@ -39,10 +39,10 @@ function App() {
     const c = makeBox()
     const b = makeBox()
     const d = makeBox()
-    box.position.x = 10
-    c.position.x = -10
-    b.position.y = 10
-    d.position.y = -10
+    box.position.x = 15
+    c.position.x = -15
+    b.position.y = 15
+    d.position.y = -15
 
     const light = new THREE.AmbientLight(0x404040) // soft white light
     scene.add(light)
