@@ -25,27 +25,37 @@ function App() {
     camera.position.set(0, 0, 100)
 
     // geometry
-    const makeBox = () => {
-      const geometry = new THREE.BoxGeometry(3, 3, 3)
+    const makeBox = (color, amount) => {
+      const geometry = new THREE.PlaneGeometry(5, 10)
       const material = new THREE.MeshStandardMaterial({
-        color: 'blue',
-        metalness: 0.5,
+        color: `${color}`,
       })
       const cone = new THREE.Mesh(geometry, material)
+      cone.position.setX(amount)
+      
       return cone
     }
-    const cone = makeBox()
-    const box = makeBox()
-    const c = makeBox()
-    const b = makeBox()
-    const d = makeBox()
-    box.position.x = 15
-    c.position.x = -15
-    b.position.y = 15
-    d.position.y = -15
 
-    const light = new THREE.AmbientLight(0x404040) // soft white light
+    const setShape = (amount, direction, color, position) => {
+      return {amount, direction, color, position}
+    }
+    const s1 = setShape(0.01, 'x', 'blue', 0)
+    const s2 = setShape(0.01, 'x', 'yellow', 15)
+    const s3 = setShape(0.01, 'y', 'green', -15)
+    const s4 = setShape(0.01, 'y', 'pink', 15)
+    const s5 = setShape(0.01, 'z', 'aqua', -15)
+
+    const cone = makeBox('blue', 0)
+    const box = makeBox('yellow', 15)
+    const c = makeBox('green', -15)
+    const b = makeBox('pink', 15)
+    const d = makeBox('firebrick', -15)
+    
+
+    const light = new THREE.AmbientLight(0x404040, 20) // soft white light
     scene.add(light)
+
+
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 3)
     scene.add(directionalLight)
@@ -62,20 +72,43 @@ function App() {
       name.rotation.z -= 0.02
     }
 
+    function move(name, amount, direction){
+      name.position.setX(amount)
+      switch (direction) {
+        case 'x':
+          name.position.setX(amount)
+          
+          break;
+        case 'y':
+        name.position.setY(amount)
+        break;
+
+        case 'z':
+          name.position.setZ(amount)
+          break;
+      
+        default:
+          break;
+      }
+    }
+
+    function moveShit(name, amount, direction, color, position){
+      rotate(name)
+      move(name, amount, direction)
+    }
+
+   
+
     // animate
     function animate() {
       requestAnimationFrame(animate)
-
-      rotate(cone)
-      rotate(box)
-      rotate(c)
-      rotate(b)
-      rotate(d)
-      b.position.y += 0.01
-      d.position.y -= 0.01
-      box.position.x += 0.01
-      c.position.x -= 0.01
-      cone.position.z += 0.02
+      shapes.forEach((shape) => moveShit(shape,  0.01, 'left'))
+      // moveShit(cone, 0.01)
+      // moveShit(box, 0.01)
+      // moveShit(c, 0.01)
+      // moveShit(b, 0.01)
+      // moveShit(d, 0.01)
+     
 
       renderer.render(scene, camera)
     }
