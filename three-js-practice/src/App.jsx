@@ -25,13 +25,13 @@ function App() {
     camera.position.set(0, 0, 100)
 
     // geometry
-    const makeBox = (color, amount) => {
+    const makeBox = (color) => {
       const geometry = new THREE.PlaneGeometry(5, 10)
       const material = new THREE.MeshStandardMaterial({
         color: `${color}`,
       })
       const cone = new THREE.Mesh(geometry, material)
-      cone.position.setX(amount)
+    
       
       return cone
     }
@@ -43,13 +43,21 @@ function App() {
     const s2 = setShape(0.01, 'x', 'yellow', 15)
     const s3 = setShape(0.01, 'y', 'green', -15)
     const s4 = setShape(0.01, 'y', 'pink', 15)
-    const s5 = setShape(0.01, 'z', 'aqua', -15)
+    const s5 = setShape(0.01, 'z', 'aqua', -15
+    )
 
-    const cone = makeBox('blue', 0)
-    const box = makeBox('yellow', 15)
-    const c = makeBox('green', -15)
-    const b = makeBox('pink', 15)
-    const d = makeBox('firebrick', -15)
+    const shapes = [s1,s2,s3,s4,s5]
+
+    const allShapes = shapes.map((shape) => {
+    return makeBox(shape.color)
+    
+  })
+console.log(allShapes);
+    // const cone = makeBox('blue', 0)
+    // const box = makeBox('yellow', 15)
+    // const c = makeBox('green', -15)
+    // const b = makeBox('pink', 15)
+    // const d = makeBox('firebrick', -15)
     
 
     const light = new THREE.AmbientLight(0x404040, 20) // soft white light
@@ -60,11 +68,11 @@ function App() {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 3)
     scene.add(directionalLight)
 
-    scene.add(cone)
-    scene.add(box)
-    scene.add(c)
-    scene.add(b)
-    scene.add(d)
+    // scene.add(cone)
+    // scene.add(box)
+    // scene.add(c)
+    // scene.add(b)
+    // scene.add(d)
 
     function rotate(name) {
       name.rotation.x += 0.01
@@ -103,11 +111,7 @@ function App() {
     function animate() {
       requestAnimationFrame(animate)
       shapes.forEach((shape) => moveShit(shape,  0.01, 'left'))
-      // moveShit(cone, 0.01)
-      // moveShit(box, 0.01)
-      // moveShit(c, 0.01)
-      // moveShit(b, 0.01)
-      // moveShit(d, 0.01)
+     
      
 
       renderer.render(scene, camera)
