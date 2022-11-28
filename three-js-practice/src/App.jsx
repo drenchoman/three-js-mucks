@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import reactLogo from './assets/react.svg'
 import * as THREE from 'three'
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 
 import './App.css'
 import { render } from 'react-dom'
@@ -20,9 +21,26 @@ function App() {
     renderer.render(scene, camera)
 
     const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
-    const material = new THREE.MeshBasicMaterial({color: 0xFF6347, wireframe: true})
+    const material = new THREE.MeshStandardMaterial({color: 0xFF6347})
     const torus = new THREE.Mesh(geometry, material)
     scene.add(torus)
+
+    const pointLight = new THREE.PointLight(0x00FF00)
+    pointLight.position.set(5,5,20)
+
+    const ambientLight = new THREE.AmbientLight(0xffffff)
+
+    const lightHelper = new THREE.PointLightHelper(pointLight)
+    const gridHelper = new THREE.GridHelper(200, 50)
+
+    scene.add(pointLight, ambientLight)
+    scene.add(lightHelper)
+    scene.add(gridHelper)
+
+    const controls = new OrbitControls(camera, renderer.domElement)
+
+
+    
     // scene
 
 
@@ -36,6 +54,7 @@ function App() {
       torus.rotation.x += 0.01;
       torus.rotation.y += 0.005;
       torus.rotation.z += 0.01;
+      controls.update()
       renderer.render(scene, camera)
     }
 
