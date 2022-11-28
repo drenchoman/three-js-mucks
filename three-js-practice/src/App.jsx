@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react'
 import reactLogo from './assets/react.svg'
 import * as THREE from 'three'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
-
+import spaceImg from '../public/space.jpeg'
+import oscarImg from '../public/pic.jpeg'
 import './App.css'
 import { render } from 'react-dom'
 
@@ -39,19 +40,30 @@ function App() {
 
     const controls = new OrbitControls(camera, renderer.domElement)
 
+
     function addStar() {
-      const geometry = new THREE.SphereGeometry(0.1, 24, 24)
-      const material = new THREE.MeshStandardMaterial({color: 0xffffff})
+      const geometry = new THREE.SphereGeometry(0.05, 24, 24)
+      const material = new THREE.MeshStandardMaterial({color: 0xFFE8E8})
       const star = new THREE.Mesh(geometry, material)
       const [x, y, z]= Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100));
       star.position.set(x, y, z)
       scene.add(star)
     }
     Array(200).fill().forEach(addStar)
-    // scene
 
+    const spaceTexture = new THREE.TextureLoader().load(spaceImg)
+    scene.background = spaceTexture
+    
+    const oscarTexture = new THREE.TextureLoader().load(oscarImg)
 
-    // camera
+    const oscar = new THREE.Mesh(
+      new THREE.BoxGeometry(3,3,3),
+      new THREE.MeshBasicMaterial({map:oscarTexture})
+    )
+
+    scene.add(oscar)
+
+    
 
 
 
