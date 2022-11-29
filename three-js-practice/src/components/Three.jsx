@@ -17,7 +17,6 @@ export default function Three() {
     const renderer = new THREE.WebGLRenderer()
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(window.innerWidth, window.innerHeight)
-    camera.position.setZ(30)
     mountRef.current.appendChild(renderer.domElement)
     renderer.render(scene, camera)
 
@@ -73,19 +72,30 @@ export default function Three() {
         normalMap: bumps
       })
     )
-    moon.position.setX(10)
-    moon.position.setY(17)
+    moon.position.setX(5)
+    moon.position.setY(-20)
     scene.add(moon)
     
+    camera.position.setZ(30)
 
+      function moveCamera() {
 
+        const m = document.querySelector('#main')
+        const t = m.getBoundingClientRect().top
+        moon.rotation.x += 0.05
+        torus.rotation.x += 0.01;
+        torus.rotation.y += 0.005;
+        torus.rotation.z += 0.01;
+        camera.position.z = 30 + t * -0.01
+        camera.position.x = t * -0.0002
+        camera.position.y = t * -0.0002
+      }
+      document.body.onscroll = moveCamera
 
     // animate
     function animate() {
       requestAnimationFrame(animate)
-      torus.rotation.x += 0.01;
-      torus.rotation.y += 0.005;
-      torus.rotation.z += 0.01;
+      
       controls.update()
       renderer.render(scene, camera)
     }
@@ -103,7 +113,7 @@ export default function Three() {
   }, [])
 
   return (
-    <div ref={mountRef}>
+    <div className='canvas' ref={mountRef}>
 
     </div>
   )
