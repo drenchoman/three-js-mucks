@@ -8,7 +8,8 @@ import textureImg from '../../public/purp.jpeg'
 
 export default function Three() {
   const mountRef = useRef(null)
-  
+
+ 
 
   useEffect(() => {
     const scene = new THREE.Scene()
