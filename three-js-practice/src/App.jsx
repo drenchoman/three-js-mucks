@@ -4,8 +4,9 @@ import * as THREE from 'three'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import spaceImg from '../public/space.jpeg'
 import oscarImg from '../public/pic.jpeg'
+import moonImg from '../public/moon.jpg'
+import textureImg from '../public/purp.jpeg'
 import './App.css'
-import { render } from 'react-dom'
 
 function App() {
   const mountRef = useRef(null)
@@ -34,8 +35,8 @@ function App() {
     const lightHelper = new THREE.PointLightHelper(pointLight)
     const gridHelper = new THREE.GridHelper(200, 50)
 
-    scene.add(pointLight, ambientLight)
-    scene.add(lightHelper)
+    scene.add(ambientLight)
+    // scene.add(lightHelper)
     scene.add(gridHelper)
 
     const controls = new OrbitControls(camera, renderer.domElement)
@@ -63,6 +64,19 @@ function App() {
 
     scene.add(oscar)
 
+    const moonTexture = new THREE.TextureLoader().load(moonImg)
+    const bumps = new THREE.TextureLoader().load(textureImg)
+
+    const moon = new THREE.Mesh(
+      new THREE.SphereGeometry(3, 32, 32),
+      new THREE.MeshStandardMaterial({
+        map: moonTexture,
+        normalMap: bumps
+      })
+    )
+    moon.position.setX(10)
+    moon.position.setY(17)
+    scene.add(moon)
     
 
 
